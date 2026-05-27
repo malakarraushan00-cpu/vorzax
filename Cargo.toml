@@ -1,0 +1,52 @@
+[package]
+name = "vorzax"
+version = "0.1.0"
+edition = "2021"
+authors = ["Vorzax Team"]
+description = "ARM64 Operating System with Full GUI Desktop"
+
+[lib]
+name = "vorzax"
+path = "src/lib.rs"
+
+[[bin]]
+name = "vorzax"
+path = "src/main.rs"
+
+[dependencies]
+# Core kernel dependencies (no_std)
+volatile = "0.5"
+spin = "0.9"
+x86_64 = { version = "0.14", optional = true }
+aarch64-cpu = "9.2"
+cortex-a = "7.3"
+
+# ARM64 specific (used conditionally)
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+aarch64 = "0.0.13"
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+
+[features]
+default = ["uefi"]
+uefi = []
+graphical = []
+
+[build-dependencies]
+cc = "1.0"
+
+[package.metadata.bootloader]
+target = "aarch64-unknown-none"
